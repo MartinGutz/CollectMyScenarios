@@ -40,6 +40,7 @@
             label1 = new Label();
             checkBoxOnTop = new CheckBox();
             buttonResetScenario = new Button();
+            currentScenarioNumberLabel = new Label();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -123,7 +124,7 @@
             // checkBoxOnTop
             // 
             checkBoxOnTop.AutoSize = true;
-            checkBoxOnTop.Location = new Point(716, 55);
+            checkBoxOnTop.Location = new Point(716, 48);
             checkBoxOnTop.Name = "checkBoxOnTop";
             checkBoxOnTop.Size = new Size(104, 19);
             checkBoxOnTop.TabIndex = 8;
@@ -133,7 +134,7 @@
             // 
             // buttonResetScenario
             // 
-            buttonResetScenario.Location = new Point(716, 88);
+            buttonResetScenario.Location = new Point(716, 71);
             buttonResetScenario.Name = "buttonResetScenario";
             buttonResetScenario.Size = new Size(159, 23);
             buttonResetScenario.TabIndex = 9;
@@ -141,11 +142,22 @@
             buttonResetScenario.UseVisualStyleBackColor = true;
             buttonResetScenario.Click += buttonResetScenario_Click;
             // 
+            // currentScenarioNumberLabel
+            // 
+            currentScenarioNumberLabel.AutoSize = true;
+            currentScenarioNumberLabel.Font = new Font("Segoe UI", 32F);
+            currentScenarioNumberLabel.Location = new Point(716, 107);
+            currentScenarioNumberLabel.Name = "currentScenarioNumberLabel";
+            currentScenarioNumberLabel.Size = new Size(94, 59);
+            currentScenarioNumberLabel.TabIndex = 10;
+            currentScenarioNumberLabel.Text = "000";
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(954, 197);
+            Controls.Add(currentScenarioNumberLabel);
             Controls.Add(buttonResetScenario);
             Controls.Add(checkBoxOnTop);
             Controls.Add(label1);
@@ -177,5 +189,6 @@
         private Label label1;
         private CheckBox checkBoxOnTop;
         private Button buttonResetScenario;
+        private Label currentScenarioNumberLabel;
     }
 }

@@ -111,21 +111,30 @@ namespace CollectMyScenarios
             previousScenarioLabel.Text = "";
             currentScenarioLabel.Text = scenarios.Length > 0 ? scenarios[0] : "";
             nextScenarioLabel.Text = scenarios.Length > 1 ? scenarios[1] : "";
+            currentScenarioNumberLabel.Text = scenarios.Length > 0 ? 1.ToString("D4") : 0.ToString("D4");
         }
 
         private void updateScenarioLabels()
         {
+            // Previous scenario
             previousScenarioLabel.Text = (_currentScenario - 1 >= 0 && _currentScenario - 1 < _scenarios.Length)
                 ? _scenarios[_currentScenario - 1]
                 : "";
 
+            // Current scenario
             currentScenarioLabel.Text = (_currentScenario < _scenarios.Length)
                 ? _scenarios[_currentScenario]
                 : "";
 
+            // Next scenario
             nextScenarioLabel.Text = (_currentScenario + 1 < _scenarios.Length)
                 ? _scenarios[_currentScenario + 1]
                 : "";
+
+            // Scenario Number padded with 4 zeros (1-based index)
+            currentScenarioNumberLabel.Text = (_currentScenario < _scenarios.Length)
+                ? (_currentScenario + 1).ToString("D4")
+                : 0.ToString("D4");
         }
 
         private void InitializeScenarios(String saveDirectory)
@@ -139,17 +148,18 @@ namespace CollectMyScenarios
                  .Where(line => !string.IsNullOrWhiteSpace(line))
                  .Take(50)
                  .ToArray();
-                populateScenarioLabels(_scenarios);
 
                 _currentFileNumber = 1;
                 _currentScenario = 0;
                 _scenarioSaveDir = DateTime.Now.ToString("yyyyMMddHHmmss");
+                populateScenarioLabels(_scenarios);
             }
             else
             {
                 _scenarios = Array.Empty<string>();
                 _currentFileNumber = 1;
                 _currentScenario = 0;
+                populateScenarioLabels(_scenarios);
             }
         }
 

@@ -29,6 +29,7 @@ namespace CollectMyScenarios
 
         private uint _currentModifier = MOD_CONTROL;
         private uint _currentKey = VK_M;
+        private string _scenarioSaveDir = DateTime.Now.ToString("yyyyMMddHHmmss");
 
         public Form1()
         {
@@ -80,7 +81,6 @@ namespace CollectMyScenarios
                 try
                 {
                     string json = File.ReadAllText(configPath);
-                    // System.Text.Json (or Newtonsoft.Json)
                     var config = System.Text.Json.JsonSerializer.Deserialize<HotkeyConfig>(json);
 
                     if (config != null)
@@ -91,7 +91,6 @@ namespace CollectMyScenarios
                 }
                 catch
                 {
-                    // Fallback to defaults if JSON parsing fails
                     _currentModifier = MOD_CONTROL;
                     _currentKey = VK_M;
                 }
@@ -116,17 +115,14 @@ namespace CollectMyScenarios
 
         private void updateScenarioLabels()
         {
-            // Previous scenario
             previousScenarioLabel.Text = (_currentScenario - 1 >= 0 && _currentScenario - 1 < _scenarios.Length)
                 ? _scenarios[_currentScenario - 1]
                 : "";
 
-            // Current scenario
             currentScenarioLabel.Text = (_currentScenario < _scenarios.Length)
                 ? _scenarios[_currentScenario]
                 : "";
 
-            // Next scenario
             nextScenarioLabel.Text = (_currentScenario + 1 < _scenarios.Length)
                 ? _scenarios[_currentScenario + 1]
                 : "";
@@ -138,7 +134,6 @@ namespace CollectMyScenarios
 
             if (File.Exists(filePath))
             {
-                // File.ReadLines streams line-by-line; Take(50) stops reading after 50 lines
                 _scenarios = File.ReadLines(filePath)
                  .Select(line => line.Trim())
                  .Where(line => !string.IsNullOrWhiteSpace(line))
@@ -148,10 +143,10 @@ namespace CollectMyScenarios
 
                 _currentFileNumber = 1;
                 _currentScenario = 0;
+                _scenarioSaveDir = DateTime.Now.ToString("yyyyMMddHHmmss");
             }
             else
             {
-                // Reset or clear if the file doesn't exist
                 _scenarios = Array.Empty<string>();
                 _currentFileNumber = 1;
                 _currentScenario = 0;
@@ -162,18 +157,17 @@ namespace CollectMyScenarios
         {
             _trayIcon = new NotifyIcon
             {
-                // Assign a standard system icon (or SystemIcons.Information)
                 Icon = SystemIcons.Application,
                 Visible = true,
                 BalloonTipTitle = "Screenshot Captured"
             };
 
-            // Optional: Clicking the notification opens the folder location
             _trayIcon.BalloonTipClicked += (sender, e) =>
             {
-                if (Directory.Exists(_saveDirectory))
+                string activeDir = Path.Combine(_saveDirectory, _scenarioSaveDir);
+                if (Directory.Exists(activeDir))
                 {
-                    System.Diagnostics.Process.Start("explorer.exe", _saveDirectory);
+                    System.Diagnostics.Process.Start("explorer.exe", activeDir);
                 }
             };
         }
@@ -190,9 +184,10 @@ namespace CollectMyScenarios
 
         private void CaptureScreen()
         {
-            if (!Directory.Exists(_saveDirectory))
+            string activeSaveDir = Path.Combine(_saveDirectory, _scenarioSaveDir);
+            if (!Directory.Exists(activeSaveDir))
             {
-                Directory.CreateDirectory(_saveDirectory);
+                Directory.CreateDirectory(activeSaveDir);
             }
 
             Rectangle bounds = Screen.FromPoint(Cursor.Position).Bounds;
@@ -200,18 +195,17 @@ namespace CollectMyScenarios
             {
                 using (Graphics g = Graphics.FromImage(bitmap))
                 {
-                    // Fix: Use bounds.Location for proper monitor origin
                     g.CopyFromScreen(bounds.Location, Point.Empty, bounds.Size);
                 }
 
                 string filename = $"{getCurrentFileNameForScreenshot()}_{DateTime.Now:yyyyMMdd_HHmmss}.png";
-                string fullPath = Path.Combine(_saveDirectory, filename);
+                string fullPath = Path.Combine(activeSaveDir, filename);
 
                 bitmap.Save(fullPath, ImageFormat.Png);
 
                 if (checkBoxDisableNotifications.Checked == false)
                 {
-                    _trayIcon.BalloonTipText = $"Saved to: {filename}";
+                    _trayIcon.BalloonTipText = $"Saved to: {_scenarioSaveDir}\\{filename}";
                     _trayIcon.ShowBalloonTip(2000);
                 }
             }
@@ -221,7 +215,6 @@ namespace CollectMyScenarios
         {
             UnregisterHotKey(this.Handle, HOTKEY_ID);
 
-            // Clean up the tray icon resource on exit
             if (_trayIcon != null)
             {
                 _trayIcon.Visible = false;
@@ -249,13 +242,11 @@ namespace CollectMyScenarios
         {
             using (FolderBrowserDialog folderDialog = new FolderBrowserDialog())
             {
-                folderDialog.Description = "Select the folder to save screenshots";
+                folderDialog.Description = "Select the base folder to save screenshots";
                 folderDialog.InitialDirectory = _saveDirectory;
 
-                // Show the dialog and check if the user selected a folder
                 if (folderDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace(folderDialog.SelectedPath))
                 {
-                    // Update the save directory variable
                     _saveDirectory = folderDialog.SelectedPath;
                     InitializeScenarios(_saveDirectory);
                     textFolderPath.Text = _saveDirectory;

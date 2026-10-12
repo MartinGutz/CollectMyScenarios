@@ -106,30 +106,39 @@ namespace CollectMyScenarios
             return input;
         }
 
+        private string TruncateLabel(string input, int maxLength = 30)
+        {
+            if (string.IsNullOrEmpty(input)) return string.Empty;
+            return input.Length <= maxLength ? input : input.Substring(0, maxLength - 3) + "...";
+        }
+
         private void populateScenarioLabels(string[] scenarios)
         {
             previousScenarioLabel.Text = "";
-            currentScenarioLabel.Text = scenarios.Length > 0 ? scenarios[0] : "";
-            nextScenarioLabel.Text = scenarios.Length > 1 ? scenarios[1] : "";
+            currentScenarioText.Text = scenarios.Length > 0 ? scenarios[0] : "";
+            nextScenarioLabel.Text = scenarios.Length > 1 ? TruncateLabel(scenarios[1]) : "";
             currentScenarioNumberLabel.Text = scenarios.Length > 0 ? 1.ToString("D4") : 0.ToString("D4");
         }
 
         private void updateScenarioLabels()
         {
             // Previous scenario
-            previousScenarioLabel.Text = (_currentScenario - 1 >= 0 && _currentScenario - 1 < _scenarios.Length)
+            string prev = (_currentScenario - 1 >= 0 && _currentScenario - 1 < _scenarios.Length)
                 ? _scenarios[_currentScenario - 1]
                 : "";
+            previousScenarioLabel.Text = TruncateLabel(prev);
 
             // Current scenario
-            currentScenarioLabel.Text = (_currentScenario < _scenarios.Length)
+            string curr = (_currentScenario < _scenarios.Length)
                 ? _scenarios[_currentScenario]
                 : "";
+            currentScenarioText.Text = curr;
 
             // Next scenario
-            nextScenarioLabel.Text = (_currentScenario + 1 < _scenarios.Length)
+            string next = (_currentScenario + 1 < _scenarios.Length)
                 ? _scenarios[_currentScenario + 1]
                 : "";
+            nextScenarioLabel.Text = TruncateLabel(next);
 
             // Scenario Number padded with 4 zeros (1-based index)
             currentScenarioNumberLabel.Text = (_currentScenario < _scenarios.Length)
@@ -208,7 +217,19 @@ namespace CollectMyScenarios
                     g.CopyFromScreen(bounds.Location, Point.Empty, bounds.Size);
                 }
 
-                string filename = $"{getCurrentFileNameForScreenshot()}_{DateTime.Now:yyyyMMdd_HHmmss}.png";
+                string baseName = getCurrentFileNameForScreenshot();
+                string suffix = $"_{DateTime.Now:yyyyMMdd_HHmmss}.png";
+
+                // Ensure the entire full path (activeSaveDir + separator + filename) is a max of 230 characters
+                int maxBaseLength = 230 - activeSaveDir.Length - 1 - suffix.Length;
+                if (maxBaseLength < 1) maxBaseLength = 1;
+
+                if (baseName.Length > maxBaseLength)
+                {
+                    baseName = baseName.Substring(0, maxBaseLength);
+                }
+
+                string filename = baseName + suffix;
                 string fullPath = Path.Combine(activeSaveDir, filename);
 
                 bitmap.Save(fullPath, ImageFormat.Png);
@@ -278,6 +299,11 @@ namespace CollectMyScenarios
         private void buttonResetScenario_Click(object sender, EventArgs e)
         {
             ResetScenarios();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

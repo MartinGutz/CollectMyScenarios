@@ -33,15 +33,13 @@
             textFolderPath = new TextBox();
             chooseOutputFolder = new Button();
             previousScenarioLabel = new Label();
-            currentScenarioLabel = new Label();
             nextScenarioLabel = new Label();
             checkBoxDisableNotifications = new CheckBox();
-            panel1 = new Panel();
             label1 = new Label();
             checkBoxOnTop = new CheckBox();
             buttonResetScenario = new Button();
             currentScenarioNumberLabel = new Label();
-            panel1.SuspendLayout();
+            currentScenarioText = new TextBox();
             SuspendLayout();
             // 
             // textBox1
@@ -71,23 +69,15 @@
             // previousScenarioLabel
             // 
             previousScenarioLabel.AutoSize = true;
-            previousScenarioLabel.Location = new Point(225, 64);
+            previousScenarioLabel.Location = new Point(174, 71);
             previousScenarioLabel.Name = "previousScenarioLabel";
             previousScenarioLabel.Size = new Size(0, 15);
             previousScenarioLabel.TabIndex = 2;
             // 
-            // currentScenarioLabel
-            // 
-            currentScenarioLabel.AutoSize = true;
-            currentScenarioLabel.Location = new Point(21, 14);
-            currentScenarioLabel.Name = "currentScenarioLabel";
-            currentScenarioLabel.Size = new Size(0, 15);
-            currentScenarioLabel.TabIndex = 3;
-            // 
             // nextScenarioLabel
             // 
             nextScenarioLabel.AutoSize = true;
-            nextScenarioLabel.Location = new Point(225, 152);
+            nextScenarioLabel.Location = new Point(174, 182);
             nextScenarioLabel.Name = "nextScenarioLabel";
             nextScenarioLabel.Size = new Size(0, 15);
             nextScenarioLabel.TabIndex = 4;
@@ -102,24 +92,16 @@
             checkBoxDisableNotifications.Text = "Disable Notifications";
             checkBoxDisableNotifications.UseVisualStyleBackColor = true;
             // 
-            // panel1
-            // 
-            panel1.BackColor = SystemColors.ControlLightLight;
-            panel1.Controls.Add(currentScenarioLabel);
-            panel1.Location = new Point(204, 93);
-            panel1.Name = "panel1";
-            panel1.Size = new Size(366, 42);
-            panel1.TabIndex = 6;
-            // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label1.Location = new Point(26, 107);
+            label1.Location = new Point(25, 117);
             label1.Name = "label1";
             label1.Size = new Size(137, 21);
             label1.TabIndex = 7;
             label1.Text = "Current Scenario";
+            label1.Click += label1_Click;
             // 
             // checkBoxOnTop
             // 
@@ -152,16 +134,24 @@
             currentScenarioNumberLabel.TabIndex = 10;
             currentScenarioNumberLabel.Text = "000";
             // 
+            // currentScenarioText
+            // 
+            currentScenarioText.Location = new Point(168, 100);
+            currentScenarioText.Multiline = true;
+            currentScenarioText.Name = "currentScenarioText";
+            currentScenarioText.Size = new Size(449, 66);
+            currentScenarioText.TabIndex = 11;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(954, 197);
+            ClientSize = new Size(954, 217);
+            Controls.Add(currentScenarioText);
             Controls.Add(currentScenarioNumberLabel);
             Controls.Add(buttonResetScenario);
             Controls.Add(checkBoxOnTop);
             Controls.Add(label1);
-            Controls.Add(panel1);
             Controls.Add(checkBoxDisableNotifications);
             Controls.Add(nextScenarioLabel);
             Controls.Add(previousScenarioLabel);
@@ -169,8 +159,6 @@
             Controls.Add(textFolderPath);
             Name = "Form1";
             Text = "Scenario Capture";
-            panel1.ResumeLayout(false);
-            panel1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -182,13 +170,12 @@
         private TextBox textFolderPath;
         private Button chooseOutputFolder;
         private Label previousScenarioLabel;
-        private Label currentScenarioLabel;
         private Label nextScenarioLabel;
         private CheckBox checkBoxDisableNotifications;
-        private Panel panel1;
         private Label label1;
         private CheckBox checkBoxOnTop;
         private Button buttonResetScenario;
         private Label currentScenarioNumberLabel;
+        private TextBox currentScenarioText;
     }
 }
